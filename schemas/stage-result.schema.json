@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "pipeline/stage-result.schema.json",
+  "title": "Pipeline Stage Result",
+  "description": "所有 pipeline skill 在 headless 调用下的统一结构化返回。语义详见 skills/_shared/handoff-spec.md §7。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["stage", "status", "handoff_path", "summary_for_card"],
+  "properties": {
+    "stage": {
+      "type": "string",
+      "enum": ["clarify", "plan", "implement", "review", "acceptance", "compound"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["DONE", "DONE_WITH_CONCERNS", "NEEDS_CONTEXT", "BLOCKED"]
+    },
+    "handoff_path": {
+      "type": "string",
+      "description": "本阶段交接文档的仓库相对路径，如 docs/pipeline/TICKET-123/20-plan.md",
+      "pattern": "^docs/pipeline/[^/]+/.+\\.md$"
+    },
+    "summary_for_card": {
+      "type": "string",
+      "description": "≤500 字，编排器原样渲染进飞书卡片，面向业务方/审批人",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "open_questions": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "question", "options", "recommended", "why"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^Q\\d+$" },
+          "question": { "type": "string", "minLength": 1 },
+          "options": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "minItems": 2,
+            "description": "必填且 ≥2：卡片交互只有按钮，缺选项 = 回答者没有否决权"
+          },
+          "recommended": { "type": "string", "minLength": 1 },
+          "why": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "concerns": {
+      "type": "array",
+      "default": [],
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "blocked_reason": {
+      "type": ["string", "null"],
+      "default": null
+    },
+    "verdict": {
+      "type": ["string", "null"],
+      "enum": ["PASS", "PASS_WITH_SUGGESTIONS", "BLOCK", null],
+      "default": null,
+      "description": "仅 review 阶段使用：评审结论。BLOCK 时编排器把 findings 路由回 implement（上限 2 轮）"
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "stage": { "enum": ["review", "acceptance"] }, "status": { "enum": ["DONE", "DONE_WITH_CONCERNS"] } } },
+      "then": {
+        "properties": { "verdict": { "type": "string", "enum": ["PASS", "PASS_WITH_SUGGESTIONS", "BLOCK"] } },
+        "required": ["verdict"]
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "NEEDS_CONTEXT" } } },
+      "then": {
+        "properties": { "open_questions": { "type": "array", "minItems": 1 } },
+        "required": ["open_questions"]
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "BLOCKED" } } },
+      "then": {
+        "properties": { "blocked_reason": { "type": "string", "minLength": 1 } },
+        "required": ["blocked_reason"]
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "DONE_WITH_CONCERNS" } } },
+      "then": {
+        "properties": { "concerns": { "type": "array", "minItems": 1 } },
+        "required": ["concerns"]
+      }
+    }
+  ]
+}

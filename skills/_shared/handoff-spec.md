@@ -2,7 +2,7 @@
 
 本文档定义流水线各阶段之间交接产物的格式与写作纪律。每个 pipeline skill 在产出交接文档前必须先读本规范；编排器按本规范解析机器头（frontmatter）。
 
-**版本**：0.7.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入）
+**版本**：0.8.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护））
 
 ---
 
@@ -14,6 +14,7 @@
 docs/pipeline/<ticket-id>/
 ├── 00-intake.md        # 原始需求原文 + 澄清问答追加记录 + 飞书工单/话题绑定信息
 ├── 05-knowledge-hints.md  # 编排器预取的历史知识提示（只读输入，非本单需求）
+├── 06-glossary.md      # 编排器预取的项目术语表（只读输入；PRD/计划/报告用语以此为准）
 ├── 10-prd.md           # 澄清阶段产物：PRD + 验收标准（AC 清单）
 ├── 20-plan.md          # 计划阶段产物：实现计划
 ├── feedback.md         # 人工反馈（append-only）：驳回理由、需求变更、补充说明，见 §8
@@ -23,9 +24,12 @@ docs/pipeline/<ticket-id>/
 ├── 40-acceptance.md    # 验收阶段产物：验收清单与结果
 ├── 90-retro.md         # 沉淀阶段产物：复盘与改进建议展开说明
 ├── 92-suggestions.json # 沉淀阶段产物：CLAUDE.md/流程建议真源（编排器发人审卡，采纳后自动合入 CLAUDE.md）
+├── 93-terms.json       # 澄清阶段产物：新术语提议（编排器发人审卡，通过后入术语表）
 ├── 95-delivery.md      # 沉淀阶段产物：交付文档（编排器推成飞书云文档并归档知识库）
 └── 96-knowledge.json   # 沉淀阶段产物：结构化知识条目（投影进知识表，供未来工单预取）
 ```
+
+另有一个**跨工单**文件（不在单个工单目录内）：`docs/pipeline/PROJECT-BRIEF.md`——项目业务简报（系统是干什么的、核心领域对象、当前约束、历史决策），clarify 阶段必读、compound 阶段维护，≤150 行。
 
 规则：
 - `<ticket-id>` 由编排器分配（来自飞书工单），skill 不得自行编造。

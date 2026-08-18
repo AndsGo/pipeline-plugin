@@ -1,0 +1,9 @@
+{
+  "skill": "acceptance",
+  "why": "唯一一条自动 AC 的验证命令必然失败——验收第一轮必须立即 BLOCK，不得发起人工验收、不得冒充通过",
+  "extraArgs": "",
+  "assert": {
+    "status": ["DONE"],
+    "verdict": "BLOCK"
+  }
+}

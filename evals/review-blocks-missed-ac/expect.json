@@ -1,0 +1,10 @@
+{
+  "skill": "review",
+  "why": "两条 AC 只实现一条——评审必须 BLOCK 且 Spec 轴清点出未实现项（不得因『总体不错』软化）",
+  "extraArgs": "base={BASE_SHA}",
+  "assert": {
+    "status": ["DONE", "DONE_WITH_CONCERNS"],
+    "verdict": "BLOCK",
+    "axes_spec_failed_min": 1
+  }
+}

@@ -61,4 +61,4 @@ disable-model-invocation: true
 
 ## 结束
 
-按 handoff-spec §6 自查后输出结构化返回（含 `verdict` 字段）。`summary_for_card` 面向业务方：结论、AC 通过情况、阻断原因（若有）。
+按 handoff-spec §6 自查后输出结构化返回，含 `verdict` 与 **`axes` 双轴清点**（spec: AC 总数/未实现数/本轴最坏项；quality: Critical/Important/Minor 计数/本轴最坏项）——清点数字必须与文档里的 AC 判定表和 findings 清单逐一对得上。`summary_for_card` 面向业务方且**两轴分句各报一句**（Spec 轴一句、质量轴一句），不合并成单一总评。

@@ -2,7 +2,7 @@
 
 本文档定义流水线各阶段之间交接产物的格式与写作纪律。每个 pipeline skill 在产出交接文档前必须先读本规范；编排器按本规范解析机器头（frontmatter）。
 
-**版本**：0.9.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护）；0.9.0：新增规则 4「流程主权」——阶段 skill 与本规范优先于仓库 CLAUDE.md 工作流规则/插件元技能/全局指南，「问人」的唯一合规形式是 NEEDS_CONTEXT）
+**版本**：0.10.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护）；0.9.0：新增规则 4「流程主权」——阶段 skill 与本规范优先于仓库 CLAUDE.md 工作流规则/插件元技能/全局指南，「问人」的唯一合规形式是 NEEDS_CONTEXT；0.10.0：review 完成态新增必填 `axes` 双轴清点，两轴永不合并排序）
 
 ---
 
@@ -155,6 +155,7 @@ open_questions:
 | `concerns` | DONE_WITH_CONCERNS 时非空，每条一句话 |
 | `blocked_reason` | BLOCKED 时必填，一段话说清障碍与已尝试的解法 |
 | `verdict` | review / acceptance 阶段完成态必填：`PASS` / `PASS_WITH_SUGGESTIONS` / `BLOCK`。注意与 status 正交——评审/验收活动顺利完成即 `status: DONE`，结论放 verdict；`BLOCK` 由编排器路由回 implement 修复轮（review 上限 2 轮，超限转人工仲裁） |
+| `axes` | review 完成态必填：双轴清点 `{spec:{total,failed,worst}, quality:{critical,important,minor,worst}}`。**两轴永不合并排序**（契约刻意不设总分字段）；数字须与交接文档的 AC 判定表、findings 清单一致 |
 
 **文件为准原则**：结构化返回是路由信号，交接文档是事实记录。两者冲突时以文件为准。
 

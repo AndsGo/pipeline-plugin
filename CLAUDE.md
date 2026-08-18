@@ -25,6 +25,17 @@
 4. **写作纪律**：每个动作步骤必须带完成判据（锐边界 + 强工作量——"充分评审"不合格，"每个 hunk 被两轴各查一次"合格）；说目标行为而不是禁行为；同一含义只允许一个措辞（用词优先取自项目术语表与 handoff-spec 既有词汇）。
 5. **外部依赖要点名**：implement 依赖 superpowers:subagent-driven-development、plan 改编自 superpowers:writing-plans——上游升级属于行为变更，升级后须过一遍试跑。
 
+## 词汇约定（leading words——一词一义，写作时按此选词）
+
+- **驳回** = 人在卡点上的否决（prd-confirm/plan-approval/deploy-approval/建议卡）；**打回** = review/acceptance 的 `BLOCK` 触发的修复回环。二者不可混用。
+- **工件** = `docs/pipeline/<ticket>/` 下随分支提交的文件本体；**产物** = 一个阶段产出的统称（工件 + 结构化返回）。
+- **AC 清单** = PRD 里的验收标准表；**检查单** = acceptance 发给人的人工验收问卷。
+- **findings** 固定用英文原词（评审发现项），不写「问题/缺陷/发现」。
+
+## 评估集（evals/）
+
+`evals/<场景名>/` = `expect.json`（断言）+ `shared/`（工作区文件）+ 可选 `base/`、`head/`（构造 diff）。跑法：编排器仓库 `npx tsx scripts/skill-eval.ts --all`（sonnet 降费执行，约 $1/全量）。**改 skill 或换模型后必须回归**；新增回归场景优先取自真实工单的事故（如 LS-008 的 AC-8）。
+
 ## 每个 skill 的健康判据（it's working if）
 
 - **clarify**：PRD 零实现细节；澄清常在一轮内收敛；AC 全带「业务验收描述」；术语提议不含通用词。

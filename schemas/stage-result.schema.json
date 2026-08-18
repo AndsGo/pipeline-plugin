@@ -61,6 +61,36 @@
       "enum": ["PASS", "PASS_WITH_SUGGESTIONS", "BLOCK", null],
       "default": null,
       "description": "仅 review 阶段使用：评审结论。BLOCK 时编排器把 findings 路由回 implement（上限 2 轮）"
+    },
+    "axes": {
+      "type": ["object", "null"],
+      "default": null,
+      "additionalProperties": false,
+      "description": "review 定稿必填：Spec 轴与质量轴各自清点。两轴永不合并排序——此处刻意不设总分/总排序字段",
+      "properties": {
+        "spec": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["total", "failed", "worst"],
+          "properties": {
+            "total": { "type": "integer", "minimum": 0, "description": "AC 总数" },
+            "failed": { "type": "integer", "minimum": 0, "description": "未实现的 AC 数（不含『diff 无法验证』）" },
+            "worst": { "type": ["string", "null"], "description": "本轴最严重一项的一句话，无则 null" }
+          }
+        },
+        "quality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["critical", "important", "minor", "worst"],
+          "properties": {
+            "critical": { "type": "integer", "minimum": 0 },
+            "important": { "type": "integer", "minimum": 0 },
+            "minor": { "type": "integer", "minimum": 0 },
+            "worst": { "type": ["string", "null"] }
+          }
+        }
+      },
+      "required": ["spec", "quality"]
     }
   },
   "allOf": [
@@ -69,6 +99,13 @@
       "then": {
         "properties": { "verdict": { "type": "string", "enum": ["PASS", "PASS_WITH_SUGGESTIONS", "BLOCK"] } },
         "required": ["verdict"]
+      }
+    },
+    {
+      "if": { "properties": { "stage": { "const": "review" }, "status": { "enum": ["DONE", "DONE_WITH_CONCERNS"] } } },
+      "then": {
+        "properties": { "axes": { "type": "object" } },
+        "required": ["axes"]
       }
     },
     {

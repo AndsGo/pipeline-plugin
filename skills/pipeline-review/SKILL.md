@@ -34,7 +34,8 @@ description: 流水线阶段⑤——独立代码评审。当工单实现完成�
 2. 通读 diff（含足够的上下文行，必要时打开完整文件）。
 3. **逐条 AC 判定**：`实现` / `未实现` / `diff 无法验证`（实现在未改动代码里、或需要运行环境）。自动 AC 亲自运行验证命令并记录输出；`diff 无法验证` 项不阻塞，但必须列出留给人工验收关注。
 4. **质量扫描**，每条 finding 记录：severity（Critical / Important / Minor）、`file:line`、问题陈述、**失败场景**（什么输入/状态下产生什么错误后果——写不出失败场景的"问题"降级为 Minor 建议）。关注：正确性、边界条件、安全（本工单类型重点：密钥展示与存储、鉴权路径）、与 Global Constraints 的冲突、测试是否真的断言了行为。
-5. 有 MR 时：Critical/Important findings 以行内评论落到 MR（discussions API / `glab api`）；无 MR 时只落文档。
+5. **横切改动的全入口核查**：diff 触及共享的横切实现（鉴权/签发/校验、中间件、公共工具）时，按相关函数名做一次 repo-wide grep（如 CreateAccessToken / ParseJWT），**逐一列出所有消费同类凭据/能力的入口**并确认本次改动已覆盖或明确无需覆盖——只审 diff 里改到的调用点会漏掉没被改的消费方（LS-009 评审用此法确认全仓库仅两处消费开放平台 token 且均已接入新校验，固化为标准动作）。
+6. 有 MR 时：Critical/Important findings 以行内评论落到 MR（discussions API / `glab api`）；无 MR 时只落文档。
 
 ## 结论映射
 

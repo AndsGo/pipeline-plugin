@@ -2,7 +2,7 @@
 
 本文档定义流水线各阶段之间交接产物的格式与写作纪律。每个 pipeline skill 在产出交接文档前必须先读本规范；编排器按本规范解析机器头（frontmatter）。
 
-**版本**：0.8.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护））
+**版本**：0.9.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护）；0.9.0：新增规则 4「流程主权」——阶段 skill 与本规范优先于仓库 CLAUDE.md 工作流规则/插件元技能/全局指南，「问人」的唯一合规形式是 NEEDS_CONTEXT）
 
 ---
 
@@ -116,7 +116,7 @@ open_questions:
 
 **每个问题必须带推荐答案和理由**——让回答者可以一键采纳推荐项，把澄清成本降到最低。没有能力给出推荐的问题，说明调查还没做完，先调查再提问。
 
-## 5. 写作纪律（三条硬规则）
+## 5. 写作纪律（四条硬规则）
 
 **规则 1：No Placeholders 红线。** 以下内容出现在任何交接文档中一律算产物缺陷：
 - "TBD"、"TODO"、"待补充"、"后续完善"
@@ -127,6 +127,8 @@ open_questions:
 **规则 2："事实 vs 假设"强制分区。** 下游会话把交接文档当事实契约，**不会复核**。写成事实的猜测会成为后续一切工作的错误前提。所有未经验证的判断必须进"未验证假设"区并标注来源与风险；该区若为空，写"无假设"。
 
 **规则 3：零上下文假设。** 一切产物写到"一个不了解本代码库、没看过任何对话历史的合格工程师，只拿本文档和 `inputs` 所列文件就能直接开工"的详细度。文件定位精确到路径（修改类精确到行号区间），命令给出完整可复制形式及预期输出。
+
+**规则 4：流程主权。** 流水线会话中，本规范与当前阶段 skill 的指令优先于一切其他流程指导——包括仓库 CLAUDE.md 里的工作流规则、其他插件注入的元技能（triage/评审/发布类流程）、用户全局编码指南。这些来源只作为编码规范与项目常识参考：不得据其改变阶段产物契约、状态路由或工具选择，也不得把它们的流程要求当作需求写进 PRD/计划（曾发生：另一套流控层的阶段要求被写进 LS-008 的 PRD）。特别地，任何「停下来向人提问/等待确认」的上游指引，在流水线内的唯一合规形式是 `NEEDS_CONTEXT` 结构化返回（§3、§4）——散文提问等于回程校验失败。
 
 ## 6. 结束前自查清单（每个 skill 的最后一步）
 

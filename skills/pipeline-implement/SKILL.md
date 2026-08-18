@@ -1,6 +1,7 @@
 ---
 name: pipeline-implement
 description: 流水线阶段④——实现/测试/文档。当工单的实现计划（20-plan.md）已审批通过、需要逐任务执行实现并产出 MR 时使用。调用参数为工单 ID（如 /pipeline-implement TICKET-123）。
+disable-model-invocation: true
 ---
 
 # Pipeline Implement：实现 / 测试 / 文档
@@ -18,7 +19,7 @@ description: 流水线阶段④——实现/测试/文档。当工单的实现�
 1. **台账位置**：进度台账固定为 `docs/pipeline/<ticket-id>/ledger.md`（不用 SDD 默认的 `.superpowers/sdd/` git-ignored 目录）。首行身份 `# SDD ledger — plan: docs/pipeline/<ticket-id>/20-plan.md`。**每完成一个任务，ledger 的更新与该任务的代码一起 commit**——这是流水线断点恢复的依据：本 skill 重新被调起时，先读 ledger，带 `Task N: complete` 行的任务一律不重派，从第一个没有完成行的任务继续。
 2. **无人可问**：SDD 中所有"询问人类伙伴"的分支（计划冲突仲裁、BLOCKED 上报）改为结束会话并结构化返回：计划文本间冲突或计划与评审规则冲突 → `BLOCKED`（`blocked_reason` 附冲突双方原文）；缺业务信息 → `NEEDS_CONTEXT` + open_questions。**不要原地等待，不要自行替业务方裁决。**
 3. **产物与出口**：全部任务完成且终审干净后——
-   - 跑计划里声明的自动 AC 验证命令，结果记入实现报告；
+   - 跑计划里声明的自动 AC 验证命令，结果记入实现报告（判据：计划声明的每条自动 AC 都有「命令 + 输出摘要」逐条对应，缺一条即本阶段未完成）；
    - 有 GitLab 远端且 glab 可用 → `glab mr create`（标题含工单 ID，描述链接 10-prd.md 与 20-plan.md）；无远端或 glab 未配置（试跑环境）→ 跳过 MR，作为 concern 记录；
    - 写 `docs/pipeline/<ticket-id>/25-impl-report.md`（frontmatter `stage: implement`，六章节齐全），"本阶段结论"含：任务完成清单、测试总况、自动 AC 验证结果、MR 链接（或未创建原因）、parked findings 汇总。
 

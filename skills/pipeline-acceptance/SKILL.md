@@ -1,6 +1,7 @@
 ---
 name: pipeline-acceptance
 description: 流水线阶段⑦——验收。当工单已通过代码评审（及 CI 部署，若有）、需要按 PRD 的验收标准清单执行验收时使用。调用参数为工单 ID（如 /pipeline-acceptance TICKET-123）。
+disable-model-invocation: true
 ---
 
 # Pipeline Acceptance：验收
@@ -25,6 +26,8 @@ description: 流水线阶段⑦——验收。当工单已通过代码评审（�
    - `options`：`["通过", "不通过", "无法验证"]`（「不通过」必须附失败现象——编排器会对缺现象的驳回强制追问）
    - `recommended`：写"通过（前提：实际操作结果与预期一致）"
    - `why`：引用支持性证据（相邻自动测试结论、review 判定），并明确"推荐不能替代实际操作"
+
+   **检查单完成判据**：每条人工 AC 的步骤零上下文可执行（含入口路径/菜单位置与预期画面），且题干直接使用该 AC 的「业务验收描述」原文；做不到的项写明缺什么。
 
 ## 第二轮：汇总定稿（人工结果已由编排器追加进 40-acceptance.md）
 

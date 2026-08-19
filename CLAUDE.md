@@ -12,10 +12,11 @@
 | pipeline-review | 独立双轴评审：Spec 符合性 + 质量 findings（带失败场景） | 仅编排器 |
 | pipeline-acceptance | AC 清单 → 自动项亲跑取证 + 人工检查单（业务语言） | 仅编排器 |
 | pipeline-compound | 全套工件 → 交付文档 / 知识条目 / 建议（92/93/95/96）+ PROJECT-BRIEF 维护 | 仅编排器 |
+| diagnosing-bugs | 疑难 bug 六阶段门控诊断（修复轮引用；**钉版本外来件**，见其 PROVENANCE.md，升级须手动 diff 上游 + 跑 skill-eval） | 模型可调 |
 | _shared/handoff-spec.md | 全体 skill 的交接契约（版本单一真源之一） | 被引用 |
 | schemas/stage-result.schema.json | 结构化返回契约 | 编排器 --json-schema |
 
-所有 skill 均 `disable-model-invocation: true`——只由编排器显式调起；在交互式会话里被模型自主触发属于事故。
+六个 pipeline-* 阶段 skill 均 `disable-model-invocation: true`——只由编排器显式调起，交互式会话里被模型自主触发属于事故。**例外：diagnosing-bugs 保持模型可调**——它是纪律层，修复轮的会话需要自主够到它。
 
 ## 变更纪律
 

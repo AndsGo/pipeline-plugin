@@ -36,9 +36,10 @@ disable-model-invocation: true
 编排器带 findings 文件调起（如 `/pipeline-implement TICKET-123 fix=docs/pipeline/TICKET-123/30-review-r1.md`）时，进入修复模式：
 
 1. 读 findings 文件与 ledger，**只处理 verdict 为 BLOCK 的 findings**（Critical/Important 与未实现的 AC）；Minor 建议不在修复轮范围。
-2. 每条 finding 按 SDD 修复回环执行：派实现子代理修复 → 跑覆盖测试 → scoped 复审。ledger 追加 `Review fix round: <finding 摘要> (commits ...)`。
-3. 完成后在 `25-impl-report.md` 追加"修复记录"段（不改写原报告），逐条列 finding → 处置（已修复/有异议）。**对 finding 有异议时不得静默丢弃**：写明理由，进 concerns，由编排器交人工仲裁。
-4. 状态出口同下表；全部目标 findings 处理完即 `DONE`（或带异议的 `DONE_WITH_CONCERNS`）。
+2. **无法直接定位或复现的 finding**（尤其验收驳回的「现象类」反馈）：先 Call the Skill tool with "diagnosing-bugs"，按其门控走——没有能变红的反馈回路命令之前不许改代码；调试日志按其唯一前缀纪律打标，收尾按其清单清干净。
+3. 每条 finding 按 SDD 修复回环执行：派实现子代理修复 → 跑覆盖测试 → scoped 复审。ledger 追加 `Review fix round: <finding 摘要> (commits ...)`。
+4. 完成后在 `25-impl-report.md` 追加"修复记录"段（不改写原报告），逐条列 finding → 处置（已修复/有异议）。**对 finding 有异议时不得静默丢弃**：写明理由，进 concerns，由编排器交人工仲裁。
+5. 状态出口同下表；全部目标 findings 处理完即 `DONE`（或带异议的 `DONE_WITH_CONCERNS`）。
 
 ## 状态出口速查
 

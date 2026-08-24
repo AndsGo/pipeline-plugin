@@ -8,7 +8,7 @@
 |---|---|---|
 | pipeline-clarify | 原始需求 → PRD + 业务语言 AC 清单 + 新术语提议（93-terms.json） | 仅编排器 |
 | pipeline-plan | PRD → 零上下文可执行的任务计划（垂直切片、依赖有序） | 仅编排器 |
-| pipeline-implement | 计划 → 代码 + 测试 + MR（薄编排，纪律委托 superpowers SDD） | 仅编排器 |
+| pipeline-implement | 计划 → 代码 + 测试 + MR（薄编排，纪律委托 superpowers SDD；台账位置/无人可问/子代理模型分层三条本地覆盖） | 仅编排器 |
 | pipeline-review | 独立双轴评审：Spec 符合性 + 质量 findings（带失败场景） | 仅编排器 |
 | pipeline-acceptance | AC 清单 → 自动项亲跑取证 + 人工检查单（业务语言） | 仅编排器 |
 | pipeline-compound | 全套工件 → 交付文档 / 知识条目 / 建议（92/93/95/96）+ PROJECT-BRIEF 维护 | 仅编排器 |

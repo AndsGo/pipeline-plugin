@@ -14,11 +14,19 @@ disable-model-invocation: true
 
 **参数**：工单 ID。**输入**：`docs/pipeline/<ticket-id>/20-plan.md`（frontmatter 须为 `stage: plan` 且 `status: DONE` 或 `DONE_WITH_CONCERNS`，否则 `BLOCKED`）；`05-knowledge-hints.md` 存在时先读——历史工单的踩坑提示（环境限制、配置陷阱），执行中主动规避，与计划冲突时以计划为准。审批是否通过由编排器保证——本 skill 被调起即视为已获批，不重复校验。
 
-## 对 SDD 的三条覆盖规则（与其原文冲突时以本节为准）
+## 对 SDD 的四条覆盖规则（与其原文冲突时以本节为准）
 
 1. **台账位置**：进度台账固定为 `docs/pipeline/<ticket-id>/ledger.md`（不用 SDD 默认的 `.superpowers/sdd/` git-ignored 目录）。首行身份 `# SDD ledger — plan: docs/pipeline/<ticket-id>/20-plan.md`。**每完成一个任务，ledger 的更新与该任务的代码一起 commit**——这是流水线断点恢复的依据：本 skill 重新被调起时，先读 ledger，带 `Task N: complete` 行的任务一律不重派，从第一个没有完成行的任务继续。
 2. **无人可问**：SDD 中所有"询问人类伙伴"的分支（计划冲突仲裁、BLOCKED 上报）改为结束会话并结构化返回：计划文本间冲突或计划与评审规则冲突 → `BLOCKED`（`blocked_reason` 附冲突双方原文）；缺业务信息 → `NEEDS_CONTEXT` + open_questions。**不要原地等待，不要自行替业务方裁决。**
-3. **产物与出口**：全部任务完成且终审干净后——
+3. **子代理模型分层是硬约束**：SDD 原文的"用能胜任该角色的最弱模型"在本流水线里不是建议——**每次派子代理都必须显式指定模型**，按角色定档：
+   - 检索/机械类（找文件、跑命令、汇总输出、格式整理）→ `haiku`
+   - 任务实现、任务级评审、scoped 复审 → `sonnet`
+   - `opus` 仅用于两种情形：全分支终审，或某个任务的实现子代理连续两轮修复仍未通过评审（升档重试，并在台账写明升档理由）
+   - 主会话（本 skill 所在的这层，负责派活与仲裁）的模型由编排器指定，不自行改动
+
+   不指定就派 = 子代理继承主会话的 opus，整单成本按最贵档位计价。实测代价：LS-012 之前的历次 implement 全是"主会话 opus + 零子代理"，单会话预算（$25）在 9 任务计划上撑不过 1-2 个任务就耗尽。**判据**：`25-impl-report.md` 的任务完成清单里，每个任务注明其实现与评审子代理各用了什么模型；出现 `opus` 的必须同时写明属于上述哪一种情形。
+
+4. **产物与出口**：全部任务完成且终审干净后——
    - 跑计划里声明的自动 AC 验证命令，结果记入实现报告（判据：计划声明的每条自动 AC 都有「命令 + 输出摘要」逐条对应，缺一条即本阶段未完成）；
    - 有 GitLab 远端且 glab 可用 → `glab mr create`（标题含工单 ID，描述链接 10-prd.md 与 20-plan.md）；无远端或 glab 未配置（试跑环境）→ 跳过 MR，作为 concern 记录；
    - 写 `docs/pipeline/<ticket-id>/25-impl-report.md`（frontmatter `stage: implement`，六章节齐全），"本阶段结论"含：任务完成清单、测试总况、自动 AC 验证结果、MR 链接（或未创建原因）、parked findings 汇总。

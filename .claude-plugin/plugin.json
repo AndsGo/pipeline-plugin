@@ -1,5 +1,5 @@
 {
   "name": "pipeline",
   "description": "飞书 + Claude Code 全流程开发流水线的阶段技能集：需求澄清、计划、实现、评审、验收、沉淀",
-  "version": "0.11.0"
+  "version": "0.10.3"
 }

@@ -2,7 +2,7 @@
 
 本文档定义流水线各阶段之间交接产物的格式与写作纪律。每个 pipeline skill 在产出交接文档前必须先读本规范；编排器按本规范解析机器头（frontmatter）。
 
-**版本**：0.10.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护）；0.9.0：新增规则 4「流程主权」——阶段 skill 与本规范优先于仓库 CLAUDE.md 工作流规则/插件元技能/全局指南，「问人」的唯一合规形式是 NEEDS_CONTEXT；0.10.0：review 完成态新增必填 `axes` 双轴清点，两轴永不合并排序）
+**版本**：0.10.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护）；0.9.0：新增规则 4「流程主权」——阶段 skill 与本规范优先于仓库 CLAUDE.md 工作流规则/插件元技能/全局指南，「问人」的唯一合规形式是 NEEDS_CONTEXT；0.10.0：review 完成态新增必填 `axes` 双轴清点，两轴永不合并排序；0.11.0：新增跨工单工件 `docs/pipeline/system-map/`（能力地图，clarify 必读、compound 增量维护、pipeline-system-map 全量重建），PROJECT-BRIEF 与 system-map 的维护同时升为 compound 的强制产物）
 
 ---
 
@@ -15,6 +15,7 @@ docs/pipeline/<ticket-id>/
 ├── 00-intake.md        # 原始需求原文 + 澄清问答追加记录 + 飞书工单/话题绑定信息
 ├── 05-knowledge-hints.md  # 编排器预取的历史知识提示（只读输入，非本单需求）
 ├── 06-glossary.md      # 编排器预取的项目术语表（只读输入；PRD/计划/报告用语以此为准）
+├── 07-map-hint.md      # 编排器算出的能力地图新鲜度（只读输入：地图落后多少提交、哪些能力已变动）
 ├── 10-prd.md           # 澄清阶段产物：PRD + 验收标准（AC 清单）
 ├── 20-plan.md          # 计划阶段产物：实现计划
 ├── feedback.md         # 人工反馈（append-only）：驳回理由、需求变更、补充说明，见 §8
@@ -29,7 +30,20 @@ docs/pipeline/<ticket-id>/
 └── 96-knowledge.json   # 沉淀阶段产物：结构化知识条目（投影进知识表，供未来工单预取）
 ```
 
-另有一个**跨工单**文件（不在单个工单目录内）：`docs/pipeline/PROJECT-BRIEF.md`——项目业务简报（系统是干什么的、核心领域对象、当前约束、历史决策），clarify 阶段必读、compound 阶段维护，≤150 行。
+另有一组**跨工单**文件（不在单个工单目录内），两者职责互补、不互相复述：
+
+```
+docs/pipeline/
+├── PROJECT-BRIEF.md          # 叙事：这个系统是什么（领域对象、约束、历史决策），≤150 行
+└── system-map/               # 清单：这个系统能做什么、在哪
+    ├── index.md              # 唯一入口：新鲜度头 + 能力清单（一行一条）+ 指向下面两处
+    ├── map.json              # 机器可读：生成时的 code_commit、各能力的 paths 与来源
+    └── capabilities/<slug>.md # 每个能力域一份：业务用途、入口、领域对象、未决与债
+```
+
+- **PROJECT-BRIEF 回答「这是什么」，system-map 回答「有什么、在哪、还缺什么」**。同一事实只写一处，另一处引用不复述（复述必然漂移）。
+- clarify 阶段必读 `system-map/index.md`（它自己指向 PROJECT-BRIEF 与相关能力页）；compound 阶段增量维护两者；全量重建由 `pipeline-system-map` skill 负责。
+- `map.json` 的 `code_commit` 是新鲜度的唯一判据：编排器据此算出地图落后多少提交，并把结论写进注入头——**地图可以旧，但不许假装新**。
 
 规则：
 - `<ticket-id>` 由编排器分配（来自飞书工单），skill 不得自行编造。

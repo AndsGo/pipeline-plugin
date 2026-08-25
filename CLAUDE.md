@@ -11,12 +11,13 @@
 | pipeline-implement | 计划 → 代码 + 测试 + MR（薄编排，纪律委托 superpowers SDD；台账位置/无人可问/子代理模型分层三条本地覆盖） | 仅编排器 |
 | pipeline-review | 独立双轴评审：Spec 符合性 + 质量 findings（带失败场景） | 仅编排器 |
 | pipeline-acceptance | AC 清单 → 自动项亲跑取证 + 人工检查单（业务语言） | 仅编排器 |
-| pipeline-compound | 全套工件 → 交付文档 / 知识条目 / 建议（92/93/95/96）+ PROJECT-BRIEF 维护 | 仅编排器 |
+| pipeline-compound | 全套工件 → 交付文档 / 知识条目 / 建议（92/93/95/96）+ PROJECT-BRIEF 与 system-map 增量维护 | 仅编排器 |
+| pipeline-system-map | 目标仓库能力地图 `docs/pipeline/system-map/` 的全量重建与按单增量 | 仅编排器 |
 | diagnosing-bugs | 疑难 bug 六阶段门控诊断（修复轮引用；**钉版本外来件**，见其 PROVENANCE.md，升级须手动 diff 上游 + 跑 skill-eval） | 模型可调 |
 | _shared/handoff-spec.md | 全体 skill 的交接契约（版本单一真源之一） | 被引用 |
 | schemas/stage-result.schema.json | 结构化返回契约 | 编排器 --json-schema |
 
-六个 pipeline-* 阶段 skill 均 `disable-model-invocation: true`——只由编排器显式调起，交互式会话里被模型自主触发属于事故。**例外：diagnosing-bugs 保持模型可调**——它是纪律层，修复轮的会话需要自主够到它。
+七个 pipeline-* skill 均 `disable-model-invocation: true`（其中 system-map 不是阶段 skill，不进状态机，由维护脚本调起）——只由编排器显式调起，交互式会话里被模型自主触发属于事故。**例外：diagnosing-bugs 保持模型可调**——它是纪律层，修复轮的会话需要自主够到它。
 
 ## 变更纪律
 
@@ -44,6 +45,7 @@
 - **implement**：ledger 可断点恢复；MR 建得出（无 glab 走 push options）；对 finding 零静默丢弃。
 - **review**：findings 全带 file:line + 失败场景；写不出失败场景的自动降级 Minor；横切改动有全入口核查记录。
 - **acceptance**：「无法验证」诚实保留，从不冒充通过；「不通过」必附现象。
-- **compound**：同一条建议不会第二次被提出（再次出现 = 上游采纳通道断了，先修通道）；知识条目 scope 填充率 100%。
+- **compound**：同一条建议不会第二次被提出（再次出现 = 上游采纳通道断了，先修通道）；知识条目 scope 填充率 100%；**PROJECT-BRIEF 与 system-map 的最后更新工单号 = 最近闭环的工单号**（对不上就是跨工单资产又被漏做了）。
+- **system-map**：clarify 能凭它答出"这需求落在哪条既有能力上"；地图落后代码的提交数不持续增长；能力页里的 `paths` 全部真实存在。
 
 判据恶化即回归信号——对照编排器 /dashboard 的三指标（评审一次通过率 / 修复轮 / 验收返工）定位是哪个 skill 松了。

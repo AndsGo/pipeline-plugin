@@ -14,7 +14,9 @@ disable-model-invocation: true
 
 **参数**：工单 ID。**输入**：`docs/pipeline/<ticket-id>/` 全部工件 + `git log` 中本工单的提交记录；`05-knowledge-hints.md` 存在时先读——里面是知识库既有条目，**同一条知识沿用既有标题更新，不要换个说法新增**（标题是知识去重的键）。**工具边界**：Read/Grep/Glob/Bash（读历史）+ Write（仅写本阶段四个产物与 `docs/pipeline/PROJECT-BRIEF.md`）。**不直接修改 CLAUDE.md 或任何 skill**——CLAUDE.md 建议写进 `92-suggestions.json`，编排器发人审卡，采纳后自动合入。
 
-**项目简报职责**：维护 `docs/pipeline/PROJECT-BRIEF.md`（跨工单的业务上下文，clarify 必读）——不存在则创建，存在则增量更新：本单为业务理解带来的新事实（新领域对象、新约束、被纠正的旧认知）追加或原地修正。固定结构〈这个系统是干什么的 / 核心领域对象与关系 / 当前约束与部署形态 / 已知历史决策〉，全文 ≤150 行，写给下一个零上下文的 clarify 会话读；**只写业务与领域事实，不写本单流水账**。
+**跨工单资产维护职责**（两件，均为强制产物，判据见"结束"一节）：
+- `docs/pipeline/PROJECT-BRIEF.md`（叙事：系统是什么）——不存在则创建，存在则增量更新：本单为业务理解带来的新事实（新领域对象、新约束、被纠正的旧认知）追加或原地修正。固定结构〈这个系统是干什么的 / 核心领域对象与关系 / 当前约束与部署形态 / 已知历史决策〉，全文 ≤150 行，写给下一个零上下文的 clarify 会话读；**只写业务与领域事实，不写本单流水账**。
+- `docs/pipeline/system-map/`（清单：能做什么、在哪、还缺什么）——按 `pipeline-system-map` skill 的"增量更新"一节执行。**两者同一事实只写一处**，地图引用 PROJECT-BRIEF 的定义而不重写。
 
 ## 素材挖掘（按信息密度排序）
 
@@ -162,4 +164,8 @@ frontmatter 按 handoff-spec（`stage: compound`），正文：
 
 按 handoff-spec §6 自查后输出结构化返回，`handoff_path` 指向 `90-retro.md`。`summary_for_card` 面向团队：本单核心教训 + 几条建议待人审。本阶段固定 `status: DONE`（沉淀没有打回一说；素材不足就少写）。
 
-**四个产物都要写**：`95-delivery.md`（给人读的总览）、`96-knowledge.json`（给下一单读的条目）、`92-suggestions.json`（建议真源，编排器发人审卡）、`90-retro.md`（复盘与展开说明）。少写任何一个都算本阶段未完成。
+**六个产物都要写**：`95-delivery.md`（给人读的总览）、`96-knowledge.json`（给下一单读的条目）、`92-suggestions.json`（建议真源，编排器发人审卡）、`90-retro.md`（复盘与展开说明），以及两个跨工单文件——`docs/pipeline/PROJECT-BRIEF.md`（业务简报增量）、`docs/pipeline/system-map/`（能力地图增量）。少写任何一个都算本阶段未完成。
+
+**跨工单两件的完成判据**（此前它们只在职责里被提了一句、不在本清单内，结果 LS-010～LS-012 三单的沉淀全部漏做，PROJECT-BRIEF 停在 LS-009——没有判据的动作在预算压力下必然被丢掉）：
+- PROJECT-BRIEF：本单带来的每个新领域对象/新约束/被纠正的旧认知，都能在文中指出它落在哪一节；本单没带来任何业务面新事实时，明确写"本单无业务面新事实"进 `90-retro.md`，不许沉默跳过。
+- system-map：本单是扩展能力/新增能力/仅修复三者之一，对应的能力页与 `index.md` 未决清单已按 `pipeline-system-map` 的"增量更新"一节改过，`map.json` 的 `lastTicket` 指向本单。

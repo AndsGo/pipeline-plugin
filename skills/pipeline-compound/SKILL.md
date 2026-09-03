@@ -13,6 +13,7 @@ disable-model-invocation: true
 **开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
 
 **参数**：工单 ID。**输入**：`docs/pipeline/<ticket-id>/` 全部工件 + `git log` 中本工单的提交记录；`05-knowledge-hints.md` 存在时先读——里面是知识库既有条目，**同一条知识沿用既有标题更新，不要换个说法新增**（标题是知识去重的键）。**工具边界**：Read/Grep/Glob/Bash（读历史）+ Write（仅写本阶段四个产物与 `docs/pipeline/PROJECT-BRIEF.md`）。**不直接修改 CLAUDE.md 或任何 skill**——CLAUDE.md 建议写进 `92-suggestions.json`，编排器发人审卡，采纳后自动合入。
+**项目流程约定**：`docs/pipeline/<ticket-id>/07-project-profile.md` 存在时**先读它**——那是本项目对本阶段的约定（测试环境有无与地址、验收人是谁、上线方式、项目特有的做法与禁忌），由编排器从仓库 `docs/pipeline/PIPELINE.md` 节选而来。与本 skill 的通用流程冲突时以它为准：项目事实优先于通用流程。
 
 **跨工单资产维护职责**（两件，均为强制产物，判据见"结束"一节）：
 - `docs/pipeline/PROJECT-BRIEF.md`（叙事：系统是什么）——不存在则创建，存在则增量更新：本单为业务理解带来的新事实（新领域对象、新约束、被纠正的旧认知）追加或原地修正。固定结构〈这个系统是干什么的 / 核心领域对象与关系 / 当前约束与部署形态 / 已知历史决策〉，全文 ≤150 行，写给下一个零上下文的 clarify 会话读；**只写业务与领域事实，不写本单流水账**。

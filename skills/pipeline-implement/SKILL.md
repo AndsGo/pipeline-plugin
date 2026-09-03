@@ -13,6 +13,7 @@ disable-model-invocation: true
 **开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`，然后加载 superpowers:subagent-driven-development。
 
 **参数**：工单 ID。**输入**：`docs/pipeline/<ticket-id>/20-plan.md`（frontmatter 须为 `stage: plan` 且 `status: DONE` 或 `DONE_WITH_CONCERNS`，否则 `BLOCKED`）；`05-knowledge-hints.md` 存在时先读——历史工单的踩坑提示（环境限制、配置陷阱），执行中主动规避，与计划冲突时以计划为准。审批是否通过由编排器保证——本 skill 被调起即视为已获批，不重复校验。
+**项目流程约定**：`docs/pipeline/<ticket-id>/07-project-profile.md` 存在时**先读它**——那是本项目对本阶段的约定（测试环境有无与地址、验收人是谁、上线方式、项目特有的做法与禁忌），由编排器从仓库 `docs/pipeline/PIPELINE.md` 节选而来。与本 skill 的通用流程冲突时以它为准：项目事实优先于通用流程。
 
 ## 对 SDD 的四条覆盖规则（与其原文冲突时以本节为准）
 

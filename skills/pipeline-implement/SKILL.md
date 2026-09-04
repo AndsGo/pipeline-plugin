@@ -61,4 +61,8 @@ disable-model-invocation: true
 
 ## 结束
 
-按 handoff-spec §6 自查后输出结构化返回，`handoff_path` 指向 `25-impl-report.md`。`summary_for_card` 面向业务方：完成了什么、测试结论、下一步是 review。
+**先确认子代理都已收工，再返回。** 输出结构化返回之前，用 `git log --oneline` 与 `git status --porcelain` 现场核对你派出的每一个子代理都已结束、其代码与 ledger 更新都已提交。**绝不在任何子代理仍在运行时吐结构化返回**——headless 环境下子代理是后台异步执行，控制会话收到「子代理已在后台运行」的提示不等于该任务已完成（LS-014 实测：控制会话据此提前返回 `BLOCKED`「分支上无实现提交」，而子代理随后正常提交了代码，两者矛盾，下游被迫多花一轮读 git log 才分清哪份是真的）。
+
+万一确因轮数/预算即将耗尽必须中断，返回里必须显式声明「**此为运行中快照，非最终状态，下游以 ledger + git 历史为准**」，不要让快照冒充定论。
+
+确认无误后按 handoff-spec §6 自查，输出结构化返回，`handoff_path` 指向 `25-impl-report.md`。`summary_for_card` 面向业务方：完成了什么、测试结论、下一步是 review。

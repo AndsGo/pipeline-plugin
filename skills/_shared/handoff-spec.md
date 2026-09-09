@@ -2,7 +2,7 @@
 
 本文档定义流水线各阶段之间交接产物的格式与写作纪律。每个 pipeline skill 在产出交接文档前必须先读本规范；编排器按本规范解析机器头（frontmatter）。
 
-**版本**：0.10.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护）；0.9.0：新增规则 4「流程主权」——阶段 skill 与本规范优先于仓库 CLAUDE.md 工作流规则/插件元技能/全局指南，「问人」的唯一合规形式是 NEEDS_CONTEXT；0.10.0：review 完成态新增必填 `axes` 双轴清点，两轴永不合并排序；0.11.0：新增跨工单工件 `docs/pipeline/system-map/`（能力地图，clarify 必读、compound 增量维护、pipeline-system-map 全量重建），PROJECT-BRIEF 与 system-map 的维护同时升为 compound 的强制产物）
+**版本**：0.12.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护）；0.9.0：新增规则 4「流程主权」——阶段 skill 与本规范优先于仓库 CLAUDE.md 工作流规则/插件元技能/全局指南，「问人」的唯一合规形式是 NEEDS_CONTEXT；0.10.0：review 完成态新增必填 `axes` 双轴清点，两轴永不合并排序；0.11.0：新增跨工单工件 `docs/pipeline/system-map/`（能力地图，clarify 必读、compound 增量维护、pipeline-system-map 全量重建），PROJECT-BRIEF 与 system-map 的维护同时升为 compound 的强制产物；0.12.0：新增可选字段 `stale_hints`——阶段发现 `05-knowledge-hints.md` 的条目与代码/环境现状矛盾时回报其标题，编排器标「待复核」并在闭环时发人审卡）
 
 ---
 
@@ -13,7 +13,7 @@
 ```
 docs/pipeline/<ticket-id>/
 ├── 00-intake.md        # 原始需求原文 + 澄清问答追加记录 + 飞书工单/话题绑定信息
-├── 05-knowledge-hints.md  # 编排器预取的历史知识提示（只读输入，非本单需求）
+├── 05-knowledge-hints.md  # 编排器预取的历史知识提示（只读输入，非本单需求；发现某条与现状矛盾 → 标题写进结构化返回的 `stale_hints`，见 §7）
 ├── 06-glossary.md      # 编排器预取的项目术语表（只读输入；PRD/计划/报告用语以此为准）
 ├── 07-map-hint.md      # 编排器算出的能力地图新鲜度（只读输入：地图落后多少提交、哪些能力已变动）
 ├── 10-prd.md           # 澄清阶段产物：PRD + 验收标准（AC 清单）
@@ -167,6 +167,7 @@ open_questions:
 | `summary_for_card` | ≤500 字，编排器原样渲染进飞书卡片。写给业务方/审批人看：说清做了什么、结论是什么、需要谁做什么。不写技术过程细节 |
 | `open_questions` | 与 frontmatter 一致（NEEDS_CONTEXT 时非空） |
 | `concerns` | DONE_WITH_CONCERNS 时非空，每条一句话 |
+| `stale_hints` | 可选。`05-knowledge-hints.md` 里**与你在代码/环境中亲眼核实到的事实相矛盾**的条目，标题逐字照抄（标题是知识表的键，改一个字就对不上）。判据是「核实到」不是「觉得」：条目描述的坑已被修掉、约束已不存在、做法已被替代，且你能在正文写出对应证据（文件:行、命令输出）。只是本单没用上、或与本单无关，**不算**过时。回报后编排器把该条标「待复核」暂停注入，闭环时发人审卡定夺——你的判断是提议，不是下线。仍要按核实到的事实做事，别因为 hint 过时就照着它做 |
 | `blocked_reason` | BLOCKED 时必填，一段话说清障碍与已尝试的解法 |
 | `verdict` | review / acceptance 阶段完成态必填：`PASS` / `PASS_WITH_SUGGESTIONS` / `BLOCK`。注意与 status 正交——评审/验收活动顺利完成即 `status: DONE`，结论放 verdict；`BLOCK` 由编排器路由回 implement 修复轮（review 上限 2 轮，超限转人工仲裁） |
 | `axes` | review 完成态必填：双轴清点 `{spec:{total,failed,worst}, quality:{critical,important,minor,worst}}`。**两轴永不合并排序**（契约刻意不设总分字段）；数字须与交接文档的 AC 判定表、findings 清单一致 |

@@ -52,6 +52,12 @@
       "default": [],
       "items": { "type": "string", "minLength": 1 }
     },
+    "stale_hints": {
+      "type": "array",
+      "default": [],
+      "description": "05-knowledge-hints.md 中与当前代码/环境事实相矛盾的条目标题（逐字照抄）。编排器据此把该条知识标「待复核」并在闭环时发人审卡",
+      "items": { "type": "string", "minLength": 1 }
+    },
     "blocked_reason": {
       "type": ["string", "null"],
       "default": null

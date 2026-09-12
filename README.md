@@ -82,7 +82,7 @@ npx tsx scripts/skill-eval.ts review-blocks-missed-ac
 
 ## 版本
 
-`plugin.json` 的主次版本跟随 `handoff-spec.md` 的契约版本，补丁位留给不动契约的 skill 内容修订（0.12.1 = 契约 0.12.0 + 判据补强）。当前 **0.16.0**（契约 0.12.0）。历史见 [CHANGELOG.md](CHANGELOG.md)。
+`plugin.json` 的主次版本跟随 `handoff-spec.md` 的契约版本，补丁位留给不动契约的 skill 内容修订（0.12.1 = 契约 0.12.0 + 判据补强）。当前 **0.16.1**（契约 0.12.0）。历史见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 文档
 

@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.16.1] — 2026-09-12（契约 0.12.0）
+
 ### 文档
 - 开源化：新增 README、LICENSE（MIT，含 diagnosing-bugs 第三方声明）、CONTRIBUTING、CHANGELOG，`docs/writing-a-skill.md`、`docs/contract.md`、`evals/README.md`。
 
@@ -59,5 +61,6 @@
 ## [0.7.0] — 2026-08-15（契约 0.7.0）
 - 插件入库：clarify / plan / implement / review / acceptance / compound 六个阶段 skill、`handoff-spec.md`、`stage-result.schema.json`。
 
-[Unreleased]: https://github.com/AndsGo/pipeline-plugin/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/AndsGo/pipeline-plugin/compare/v0.16.1...HEAD
+[0.16.1]: https://github.com/AndsGo/pipeline-plugin/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/AndsGo/pipeline-plugin/releases/tag/v0.16.0

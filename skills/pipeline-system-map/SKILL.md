@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 它服务于一个具体场景：业务人员给出一句模糊需求时，澄清阶段能立刻判断"这落在既有能力 X 上，是要扩展它还是新建"，而不是从零 Grep 一遍代码再猜。
 
-**开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
+**开始前必读**：`${PIPELINE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
 
 **参数**：`rebuild`（全量重建）或 `ticket=<工单号>`（增量更新）。
 

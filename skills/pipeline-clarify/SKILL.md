@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 把业务原始需求转化为两样东西：**PRD**（消除了歧义的需求描述）和**验收标准清单**（AC，每条都能被零上下文的验收人独立执行）。本阶段**只澄清"做什么"和"怎么算做完"，不设计"怎么做"**——实现方案是 pipeline-plan 的事，本阶段写了实现方案属于越界缺陷。
 
-**开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`（交接格式、四态语义、写作纪律、自查清单，本文不重复其内容）。
+**开始前必读**：`${PIPELINE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`（交接格式、四态语义、写作纪律、自查清单，本文不重复其内容）。
 
 **参数**：工单 ID。工作区为 `docs/pipeline/<ticket-id>/`。
 

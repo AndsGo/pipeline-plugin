@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 按 `20-plan.md` 逐任务执行实现。执行引擎复用 **superpowers:subagent-driven-development**（SDD：每任务派全新子代理 + 任务级评审 + 修复回环上限 + 全分支终审），本 skill 只定义流水线适配规则；SDD 的过程纪律（模型分层、评审包、fix loop、breaker 仲裁）全部照其原文执行。
 
-**开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`，然后加载 superpowers:subagent-driven-development。
+**开始前必读**：`${PIPELINE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`，然后加载 superpowers:subagent-driven-development。
 
 **参数**：工单 ID。**输入**：`docs/pipeline/<ticket-id>/20-plan.md`（frontmatter 须为 `stage: plan` 且 `status: DONE` 或 `DONE_WITH_CONCERNS`，否则 `BLOCKED`）；`05-knowledge-hints.md` 存在时先读——历史工单的踩坑提示（环境限制、配置陷阱），执行中主动规避，与计划冲突时以计划为准。审批是否通过由编排器保证——本 skill 被调起即视为已获批，不重复校验。
 **项目流程约定**：`docs/pipeline/<ticket-id>/07-project-profile.md` 存在时**先读它**——那是本项目对本阶段的约定（测试环境有无与地址、验收人是谁、上线方式、项目特有的做法与禁忌），由编排器从仓库 `docs/pipeline/PIPELINE.md` 节选而来。与本 skill 的通用流程冲突时以它为准：项目事实优先于通用流程。
@@ -20,6 +20,9 @@ disable-model-invocation: true
 1. **台账位置**：进度台账固定为 `docs/pipeline/<ticket-id>/ledger.md`（不用 SDD 默认的 `.superpowers/sdd/` git-ignored 目录）。首行身份 `# SDD ledger — plan: docs/pipeline/<ticket-id>/20-plan.md`。**每完成一个任务，ledger 的更新与该任务的代码一起 commit**——这是流水线断点恢复的依据：本 skill 重新被调起时，先读 ledger，带 `Task N: complete` 行的任务一律不重派，从第一个没有完成行的任务继续。
 2. **无人可问**：SDD 中所有"询问人类伙伴"的分支（计划冲突仲裁、BLOCKED 上报）改为结束会话并结构化返回：计划文本间冲突或计划与评审规则冲突 → `BLOCKED`（`blocked_reason` 附冲突双方原文）；缺业务信息 → `NEEDS_CONTEXT` + open_questions。**不要原地等待，不要自行替业务方裁决。**
 3. **子代理模型分层是硬约束**：SDD 原文的"用能胜任该角色的最弱模型"在本流水线里不是建议——**每次派子代理都必须显式指定模型**，按角色定档：
+   - 本节覆盖 SDD 的 weakest-model 建议。Claude 的任务实现及任务级评审必须显式 `model: "sonnet"`，即使改动只有一行也不归为机械任务；全分支终审必须显式 `model: "opus"`。`haiku` 仅可做独立检索/命令/汇总，不能承担 Task 的功能实现。派发前列出本次角色与模型；未遵守时停止并重新派发，不得把错误档位记为合格执行。
+   - **Claude 原生派发格式**：Agent/Task 的 `description` 必须以角色标记开头：`[pipeline:implementer:1]`、`[pipeline:task-review:1]`（数字替换为计划 Task 编号）、`[pipeline:final-review]` 或 `[pipeline:mechanical]`，并在工具 JSON input 中填写 `model`，不能只写在 prompt。例如 `{"description":"[pipeline:implementer:1] implement","model":"sonnet","subagent_type":"general-purpose","run_in_background":false,"prompt":"按原 SDD 模板填写任务上下文"}`。建议前台运行；后台运行必须等待原生完成通知。编排器会在派发前拒绝违规输入，并以真实 child ID 与完成事件核验每个 Task 的独立实现、任务评审及终审；ledger 自称 complete 不能替代证据。任务评审最终回复先写 `PIPELINE_REVIEW_VERDICT: PASS` 或 `PIPELINE_REVIEW_VERDICT: BLOCK`，再按原 SDD 模板报告；连续两次失败升级实现时使用 `[pipeline:escalated-implementer:1]`、`model:"opus"`，prompt 加 `PIPELINE_ESCALATION_REASON: <原因>`，并在 ledger 记载。
+   - **CLI 原生约束模式**：编排器明确声明该模式时，非 Claude CLI 使用其原生角色与模型配置，不传入 Claude 的 haiku/sonnet/opus 别名，也不宣称同等价格分层或限制继承。报告中逐任务记录实际 CLI、实现/评审代理、实际模型（继承时如实注明）。独立实现、独立任务评审和全分支终审仍必须实际执行；没有原生子代理就 BLOCKED，禁止由主会话模拟三个角色。
    - 检索/机械类（找文件、跑命令、汇总输出、格式整理）→ `haiku`
    - 任务实现、任务级评审、scoped 复审 → `sonnet`
    - `opus` 仅用于两种情形：全分支终审，或某个任务的实现子代理连续两轮修复仍未通过评审（升档重试，并在台账写明升档理由）

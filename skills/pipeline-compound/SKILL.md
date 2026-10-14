@@ -10,9 +10,9 @@ disable-model-invocation: true
 
 读取本工单全套工件，把值得留下的知识**按去向分拣**后落盘。沉淀的价值判据只有一个：**下一个工单（或下一个会话）会因为这条记录少走弯路吗？** 不满足的不写——复述流水账是最常见的沉淀失败。
 
-**开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
+**开始前必读**：`${PIPELINE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
 
-**参数**：工单 ID。**输入**：`docs/pipeline/<ticket-id>/` 全部工件 + `git log` 中本工单的提交记录；`05-knowledge-hints.md` 存在时先读——里面是知识库既有条目，**同一条知识沿用既有标题更新，不要换个说法新增**（标题是知识去重的键）。**工具边界**：Read/Grep/Glob/Bash（读历史）+ Write（仅写本阶段四个产物与 `docs/pipeline/PROJECT-BRIEF.md`）。**不直接修改 CLAUDE.md 或任何 skill**——CLAUDE.md 建议写进 `92-suggestions.json`，编排器发人审卡，采纳后自动合入。
+**参数**：工单 ID。**输入**：`docs/pipeline/<ticket-id>/` 全部工件 + `git log` 中本工单的提交记录；`05-knowledge-hints.md` 存在时先读——里面是知识库既有条目，**同一条知识沿用既有标题更新，不要换个说法新增**（标题是知识去重的键）。**工具边界**：Read/Grep/Glob/Bash（读历史）+ Write（仅写本阶段四个产物与 `docs/pipeline/PROJECT-BRIEF.md`）。**不直接修改 AGENTS.md、PROJECT-KNOWLEDGE.md 或任何 skill**——通用规则与项目常识建议写进 `92-suggestions.json`，编排器发人审卡，采纳后自动合入。
 **项目流程约定**：`docs/pipeline/<ticket-id>/07-project-profile.md` 存在时**先读它**——那是本项目对本阶段的约定（测试环境有无与地址、验收人是谁、上线方式、项目特有的做法与禁忌），由编排器从仓库 `docs/pipeline/PIPELINE.md` 节选而来。与本 skill 的通用流程冲突时以它为准：项目事实优先于通用流程。
 
 **跨工单资产维护职责**（两件，均为强制产物，判据见"结束"一节）：
@@ -26,19 +26,19 @@ disable-model-invocation: true
 3. **review/acceptance 发现的既有缺口**（非本次引入的问题）：候选新工单。
 4. **概念纠正**：需求原文与最终实现之间的理解差（如"新增功能"实为"补前端入口"）。
 
-**挖掘完成判据**：每次修复回环都有「本可以在哪个更早阶段被拦住」的答案，且该答案已落进对应产物（流程类进 92/96，项目常识进 CLAUDE.md 建议）；答不出的写明为什么。
+**挖掘完成判据**：每次修复回环都有「本可以在哪个更早阶段被拦住」的答案，且该答案已落进对应产物（流程类进 92/96，项目常识进 PROJECT-KNOWLEDGE.md 建议）；答不出的写明为什么。
 
 ## 三路分拣（每条素材过一遍判据）
 
 | 去向 | 判据 | 产出形式 |
 |---|---|---|
-| **目标仓库 CLAUDE.md** | 项目常识：下次**任何**会话进这个仓库都该知道（构建怪癖、环境限制、领域规则、部署形态差异） | 结构化条目写入 `92-suggestions.json` 的 `claudeMd`（编排器发人审卡，采纳后自动合入并提交） |
+| **目标仓库通用规则与项目常识** | 项目常识：下次**任何**会话进这个仓库都该知道（构建怪癖、环境限制、领域规则、部署形态差异） | 结构化条目写入 `92-suggestions.json` 的 `agentsMd`（通用规则）或 `projectKnowledge`（项目常识）（编排器发人审卡，采纳后自动合入并提交） |
 | **pipeline plugin（流程）** | 跨仓库、跨工单的流程改进（某阶段该多查什么、验证方式怎么写才可判定） | 结构化条目写入 `92-suggestions.json` 的 `process`（编排器转发给人，人工改 skill）；证据与展开说明写 `90-retro.md` |
 | **叙事复盘（Wiki）** | 给人看的一次性复盘：本单为什么回环、教训是什么 | `90-retro.md` 正文（编排器负责 `move_docs_to_wiki` 归档） |
 
 分拣纪律：
-- **CLAUDE.md 是稀缺资源**：每条建议 ≤2 行、必须可执行（"注意 X"不合格，"X 时用 Y"合格）；本单特有的信息不进 CLAUDE.md。
-- 同一条素材可以多路（环境限制既进 CLAUDE.md 一行，也进流程建议）。
+- **规则与项目常识是稀缺资源**：每条建议 ≤2 行、必须可执行（"注意 X"不合格，"X 时用 Y"合格）；本单特有的信息不进通用规则或项目常识。
+- 同一条素材可以多路（环境限制既进 PROJECT-KNOWLEDGE.md 一行，也进流程建议）。
 - 无可沉淀内容的路写"无"——硬凑比空白更有害。
 
 ## 产物一：95-delivery.md（交付文档，给人读的总览）
@@ -108,11 +108,12 @@ disable-model-invocation: true
 
 ## 产物三：92-suggestions.json（建议，编排器发人审卡）
 
-CLAUDE.md 建议与流程改进建议的**结构化真源**。编排器读它发飞书人审卡：`claudeMd` 条目被采纳后**自动追加进目标仓库 CLAUDE.md 并提交**，所以每条必须独立成立、可直接入文；`process` 条目转发给人（不自动执行）。
+通用规则、项目知识与流程改进建议的**结构化真源**。`agentsMd` 保存通用 agent 规则，采纳后写入目标仓库 `AGENTS.md`；`projectKnowledge` 保存项目维度事实、构建与部署经验，采纳后写入 `docs/pipeline/PROJECT-KNOWLEDGE.md`。每条必须独立成立、可直接入文；`process` 条目转发给人（不自动执行）。旧 `claudeMd` 字段只供兼容读取，新产物不得继续使用。
 
 ```json
 {
-  "claudeMd": [
+  "agentsMd": [],
+  "projectKnowledge": [
     {
       "section": "## 环境限制",
       "line": "- 本机 Docker daemon 通常未运行；nginx 配置验证用 docker/check-nginx-mcp-limits.sh，不要跑 nginx -t",
@@ -127,11 +128,11 @@ CLAUDE.md 建议与流程改进建议的**结构化真源**。编排器读它发
 
 字段规则：
 
-- `section`：CLAUDE.md 的目标小节标题（含 `#` 前缀）。优先复用 CLAUDE.md 现有小节；不存在的小节会在文件末尾新建。
-- `line`：要追加的完整一行（含 `- ` 等格式），**单行、可执行**（"X 时用 Y"合格，"注意 X"不合格）；与 CLAUDE.md 中完全相同的行会被跳过，所以措辞要稳定。
+- `section`：对应目标文件的小节标题（含 `#` 前缀）。优先复用现有小节；不存在的小节会在文件末尾新建。
+- `line`：要追加的完整一行（含 `- ` 等格式），**单行、可执行**（"X 时用 Y"合格，"注意 X"不合格）；与目标文件完全相同的行会被跳过，所以措辞要稳定。
 - `why`：触发本建议的证据，渲染进人审卡片——人只看卡片就能决策。
-- 无建议时写 `{"claudeMd": [], "process": []}`，不要省略文件。
-- **提出前先查重**：读目标仓库 CLAUDE.md，已覆盖的常识不重复建议；上一单提过且被驳回的建议（见 90-retro/feedback 记录）不原样重提。
+- 无建议时写 `{"agentsMd": [], "projectKnowledge": [], "process": []}`，不要省略文件。
+- **提出前先查重**：读 AGENTS.md、PROJECT-KNOWLEDGE.md 及兼容的 CLAUDE.md，已覆盖的常识不重复建议；上一单被驳回的建议不原样重提。
 
 ## 产物四：90-retro.md
 
@@ -145,8 +146,8 @@ frontmatter 按 handoff-spec（`stage: compound`），正文：
 | 项 | 值 |
 |---|---|（各阶段轮数/成本/回环次数/AC 一次通过率，从工件与结构化返回汇总）
 
-## CLAUDE.md 建议
-[与 92-suggestions.json 的 claudeMd 一致，附每条的完整依据与考虑过的替代写法]
+## 通用规则与项目知识建议
+[与 92-suggestions.json 的 agentsMd / projectKnowledge 一致，附每条的完整依据与考虑过的替代写法]
 ## 流程改进建议
 [与 92-suggestions.json 的 process 一致，附触发证据]
 ## 叙事复盘

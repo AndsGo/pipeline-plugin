@@ -2,6 +2,10 @@
 
 本文档定义流水线各阶段之间交接产物的格式与写作纪律。每个 pipeline skill 在产出交接文档前必须先读本规范；编排器按本规范解析机器头（frontmatter）。
 
+所有 agent CLI 共用本规范与阶段 skill。`${PIPELINE_PLUGIN_ROOT}` 由编排器适配器解析为本插件绝对路径；`${CLAUDE_PLUGIN_ROOT}` 是旧版本兼容别名。不得因为 CLI 不同而省略独立子代理、评审或交接纪律；缺少必需技能或能力时返回 BLOCKED。
+
+项目规则来自 `AGENTS.md`，项目知识来自 `docs/pipeline/PROJECT-KNOWLEDGE.md`。各适配器显式提供相同内容。旧 `CLAUDE.md` 暂作为兼容输入，发现冲突时报告并停止，不自动覆盖。
+
 **版本**：0.12.0（字段变更必须同步更新 `schemas/stage-result.schema.json` 并升版本号。0.2.0：新增 `verdict`；0.3.0：`verdict` 扩展至 acceptance；0.4.0：`open_questions[].options` 升为必填 ≥2；0.5.0：新增 §8 人工反馈通道 `feedback=`；0.6.0：沉淀阶段新增 `95-delivery.md` 与 `96-knowledge.json`，新增 `05-knowledge-hints.md` 只读输入；0.7.0：沉淀阶段新增 `92-suggestions.json`（CLAUDE.md/流程建议真源，编排器发人审卡），`05-knowledge-hints.md` 扩展为除 ci 外全部阶段的只读输入；0.8.0：新增 `06-glossary.md` 只读输入与澄清产物 `93-terms.json`（新术语提议，人审后入术语表），AC 增加「业务验收描述」行，新增跨工单文件 `docs/pipeline/PROJECT-BRIEF.md`（clarify 必读、compound 维护）；0.9.0：新增规则 4「流程主权」——阶段 skill 与本规范优先于仓库 CLAUDE.md 工作流规则/插件元技能/全局指南，「问人」的唯一合规形式是 NEEDS_CONTEXT；0.10.0：review 完成态新增必填 `axes` 双轴清点，两轴永不合并排序；0.11.0：新增跨工单工件 `docs/pipeline/system-map/`（能力地图，clarify 必读、compound 增量维护、pipeline-system-map 全量重建），PROJECT-BRIEF 与 system-map 的维护同时升为 compound 的强制产物；0.12.0：新增可选字段 `stale_hints`——阶段发现 `05-knowledge-hints.md` 的条目与代码/环境现状矛盾时回报其标题，编排器标「待复核」并在闭环时发人审卡）
 
 ---

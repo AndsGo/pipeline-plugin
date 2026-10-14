@@ -94,3 +94,9 @@ npx tsx scripts/skill-eval.ts review-blocks-missed-ac
 ## 许可
 
 [MIT](LICENSE)。`skills/diagnosing-bugs/` 来自 [mattpocock/skills](https://github.com/mattpocock/skills)（MIT，Matt Pocock），钉定 commit 与本地修改见其 `PROVENANCE.md`。
+
+## 多 CLI 编排接入
+
+2026-10-13 编排器按用户要求将默认底座改为 Codex；Claude Code 与 OpenCode 可按全局、项目与阶段显式选择。编排器将本插件同一套阶段规则交付给各适配器，已有工单继续使用冻结配置。共享规则读取 `AGENTS.md` 与 `docs/pipeline/PROJECT-KNOWLEDGE.md`；旧 `CLAUDE.md` 保留为兼容输入。路径变量使用 `${PIPELINE_PLUGIN_ROOT}`，Claude 旧变量由桥接兼容。
+
+适配器必须真实提供规则要求的权限、预算、轮数、浏览器及角色子代理能力；缺失时报告 BLOCKED，不得模拟或自动换 CLI。当前 Codex/OpenCode 的必需约束仍有未验收能力，注册适配器不等于已经可用于生产。执行配置及验收限制见 sibling orchestrator 的 `docs/agent-execution.md`。

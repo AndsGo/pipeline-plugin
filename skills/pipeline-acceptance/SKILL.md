@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 把 `10-prd.md` 的 AC 清单变成验收结果：**自动项亲自运行验证命令并记录证据，人工项生成零上下文可执行的检查单交人完成**。验收的唯一依据是 AC 清单——不重新评审代码，不扩大范围。
 
-**开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
+**开始前必读**：`${PIPELINE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
 
 **参数**：工单 ID。**输入**：`10-prd.md`（AC 清单）、最新一轮 `30-review-r<N>.md`（其"给下一阶段的指令"中的人工重点项必须并入检查单）、`25-impl-report.md`（了解 MR/部署状态与已知 concerns）；`05-knowledge-hints.md` 存在时先读——历史验收类踩坑（如某环境跑不了某类验证命令），据此把注定跑不了的自动项提前分流为人工项，而不是现场发现。输入缺失 → `BLOCKED`。
 **项目流程约定**：`docs/pipeline/<ticket-id>/07-project-profile.md` 存在时**先读它**——那是本项目对本阶段的约定（测试环境有无与地址、验收人是谁、上线方式、项目特有的做法与禁忌），由编排器从仓库 `docs/pipeline/PIPELINE.md` 节选而来。与本 skill 的通用流程冲突时以它为准：项目事实优先于通用流程。

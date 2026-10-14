@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 为**零上下文、不了解本代码库**的执行者编写实现计划：每个任务要动哪些文件、完整的代码、怎么测、怎么提交。全部拆成 2-5 分钟粒度的步骤。DRY、YAGNI、TDD、频繁提交。
 
-**开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
+**开始前必读**：`${PIPELINE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
 
 **参数**：工单 ID。**输入**：`docs/pipeline/<ticket-id>/10-prd.md`（frontmatter 必须是 `stage: clarify`、`status: DONE` 或 `DONE_WITH_CONCERNS`；不满足 → `BLOCKED`，说明输入未就绪）。**输出**：`docs/pipeline/<ticket-id>/20-plan.md`。
 

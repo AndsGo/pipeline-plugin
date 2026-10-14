@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 以**独立、无实现上下文**的视角评审本工单的代码改动，产出双轴结论：**Spec 符合性**（逐条 AC）+ **代码质量**（分级 findings）。
 
-**开始前必读**：`${CLAUDE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
+**开始前必读**：`${PIPELINE_PLUGIN_ROOT}/skills/_shared/handoff-spec.md`。
 
 **参数**：工单 ID；可选 `base=<sha>`（diff 基点，编排器传入）。
 

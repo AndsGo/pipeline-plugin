@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.16.3-rc.1] — 2026-10-14（契约 0.12.0）
+
+- 阶段规则适配 Claude Code、Codex 与 OpenCode；优先读取 `AGENTS.md` 通用规则和 `docs/pipeline/PROJECT-KNOWLEDGE.md` 项目知识，保留旧规则兼容。
+- implement 保留原生独立子代理与明确角色模型要求；compound 将通用规则和项目知识写入对应文件。
+- handoff 明确跨 CLI 的交接与知识边界，既有契约及版本保持不变。
+- 候选版：配套编排器 `v0.8.0-rc.1`，整体三引擎最终验收尚未完成。此前未发布的 0.16.2 澄清规则包含在本版本中。
+
 ## [0.16.2] — 2026-09-23（契约 0.12.0）
 - **clarify**：认得需求池转来的单（「来自需求 REQ-xxx」）——梳理阶段已确认的澄清问答视为定论；调研结论逐条用代码核实再用；只做本单那一项拆分。编排器侧见 orchestrator `docs/design/2026-09-23-requirements-pool.md`。
 

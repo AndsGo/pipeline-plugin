@@ -18,6 +18,10 @@ disable-model-invocation: true
 
 ## 输入检查
 
+本 skill 仅用于已建立的工单。需求池收录与提炼使用 pipeline-intake，不因为用户提到了“需求”就要求 REQ 编号拥有工单目录。
+
+需求池传来的产品卡片包含原始反馈、确认备注、事实和未确认假设。以确认版本的范围为基础，读取确认备注和后续补充；“验收方向”需要在这里转为可执行 AC，假设与建议不能当作用户定论。发现范围与验收冲突时提出具体业务问题，不静默扩大范围。
+
 读取 `docs/pipeline/<ticket-id>/00-intake.md`：
 
 - 文件不存在 → `status: BLOCKED`，`blocked_reason` 写明"编排错误：00-intake.md 缺失"。不要自己创建它。

@@ -13,6 +13,7 @@ skills/
 ├── _shared/handoff-spec.md      交接契约：目录约定、机器头 + 六节人类体、四态语义、写作纪律、自查清单
 ├── pipeline-clarify/            ② 原始需求 → PRD + 业务语言验收标准 + 新术语提议
 ├── pipeline-prototype/          ②′ 定稿 PRD → 一页业务人员看得懂的结果预览（HTML）
+├── pipeline-bug/                Bug 登记与只读初步调查 → 业务摘要、复现线索与分诊建议
 ├── pipeline-plan/               ③ PRD → 零上下文可执行的任务计划
 ├── pipeline-implement/          ④ 计划 → 代码 + 测试 + MR（子代理驱动，台账可断点恢复）
 ├── pipeline-review/             ⑤ 独立双轴评审：Spec 符合性 + Quality findings

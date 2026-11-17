@@ -6,6 +6,7 @@
 
 | skill | 一句话职责 | 调用方 |
 |---|---|---|
+| pipeline-bug | 故障反馈 → 业务摘要、复现线索与只读分诊建议；不直接修复或关闭 Bug | 编排器 Bug 调查入口 |
 | pipeline-clarify | 原始需求 → PRD + 业务语言 AC 清单 + 新术语提议（93-terms.json） | 仅编排器 |
 | pipeline-plan | PRD → 零上下文可执行的任务计划（垂直切片、依赖有序） | 仅编排器 |
 | pipeline-implement | 计划 → 代码 + 测试 + MR（薄编排，纪律委托 superpowers SDD；台账位置/无人可问/子代理模型分层三条本地覆盖） | 仅编排器 |
@@ -18,6 +19,8 @@
 | schemas/stage-result.schema.json | 结构化返回契约 | 编排器 --json-schema |
 
 七个 pipeline-* skill 均 `disable-model-invocation: true`（其中 system-map 不是阶段 skill，不进状态机，由维护脚本调起）——只由编排器显式调起，交互式会话里被模型自主触发属于事故。**例外：diagnosing-bugs 保持模型可调**——它是纪律层，修复轮的会话需要自主够到它。
+
+`pipeline-bug` 同样仅由编排器显式调起，使用独立 `bug-card` 输出协议，不进入阶段结果 schema。
 
 ## 变更纪律
 

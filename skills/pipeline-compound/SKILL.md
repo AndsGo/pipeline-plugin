@@ -164,7 +164,7 @@ frontmatter 按 handoff-spec（`stage: compound`），正文：
 
 ## 结束
 
-按 handoff-spec §6 自查后输出结构化返回，`handoff_path` 指向 `90-retro.md`。`summary_for_card` 面向团队：本单核心教训 + 几条建议待人审。本阶段固定 `status: DONE`（沉淀没有打回一说；素材不足就少写）。
+按 handoff-spec §6 自查后输出结构化返回，`handoff_path` 指向 `90-retro.md`。`summary_for_card` 面向业务用户：本单改变了什么、验证到了什么范围、仍有什么限制、下一步需要谁做什么，与 `95-delivery.md` 的结论一致。未上线或未做线上验证必须明确说明，不把测试通过写成线上已生效。影响使用或决策的遗留风险同时写入 `concerns`，不能仅留在详细文档。复盘教训和改进建议完整保留在 `90-retro.md` 与 `92-suggestions.json`；简洁展示不减少这些产物。本阶段固定 `status: DONE`（沉淀没有打回一说；素材不足就少写）。
 
 **六个产物都要写**：`95-delivery.md`（给人读的总览）、`96-knowledge.json`（给下一单读的条目）、`92-suggestions.json`（建议真源，编排器发人审卡）、`90-retro.md`（复盘与展开说明），以及两个跨工单文件——`docs/pipeline/PROJECT-BRIEF.md`（业务简报增量）、`docs/pipeline/system-map/`（能力地图增量）。少写任何一个都算本阶段未完成。
 
